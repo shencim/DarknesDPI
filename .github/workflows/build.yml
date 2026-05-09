@@ -22,11 +22,6 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Setup Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.22'
-
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -40,21 +35,19 @@ jobs:
       - name: Install frontend dependencies
         run: npm ci
 
-      - name: Clone and build SpoofDPI (bypax-proxy)
+      - name: Download SpoofDPI Windows binary
         shell: bash
         run: |
-          git clone --depth 1 https://github.com/xvzc/SpoofDPI.git SpoofDPI-src
-          mkdir -p spoofdpi
           mkdir -p src-tauri/binaries
-          cd SpoofDPI-src
-          go build -trimpath -ldflags="-s -w" -o ../spoofdpi/bypax-proxy.exe ./cmd/spoofdpi
-          echo "SpoofDPI build OK"
-
-      - name: Copy proxy binary to tauri binaries
-        shell: bash
-        run: |
-          cp spoofdpi/bypax-proxy.exe src-tauri/binaries/bypax-proxy.exe
-          cp spoofdpi/bypax-proxy.exe "src-tauri/binaries/bypax-proxy-x86_64-pc-windows-msvc.exe"
+          # SpoofDPI v1.2.1 Windows amd64 binary indir
+          curl -L --retry 3 \
+            "https://github.com/xvzc/SpoofDPI/releases/download/v1.2.1/spoofdpi-windows-amd64.zip" \
+            -o spoofdpi.zip
+          unzip -o spoofdpi.zip -d spoofdpi-extracted/
+          # Binary'i bul ve kopyala
+          find spoofdpi-extracted/ -name "*.exe" | head -1 | xargs -I{} cp {} src-tauri/binaries/bypax-proxy.exe
+          cp src-tauri/binaries/bypax-proxy.exe "src-tauri/binaries/bypax-proxy-x86_64-pc-windows-msvc.exe"
+          echo "Binary hazır:"
           ls -lh src-tauri/binaries/
 
       - name: Update proxy icon (change-icon.js)
