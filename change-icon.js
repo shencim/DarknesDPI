@@ -10,7 +10,7 @@ async function main() {
     const rceditModule = await import('rcedit');
     const rcedit = rceditModule.rcedit || rceditModule.default;
     const exePath = path.join(__dirname, 'src-tauri', 'binaries', 'bypax-proxy-x86_64-pc-windows-msvc.exe');
-    const pngPath = path.join(__dirname, 'public', 'bypax-engine.png');
+    const pngPath = path.join(__dirname, 'public', 'darknesdpi-engine.png');
     const iconPath = path.join(__dirname, 'src-tauri', 'icons', 'bypax-engine.ico');
     
     // Also convert uninstall.png to uninstall.ico
