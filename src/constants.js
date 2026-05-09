@@ -1,5 +1,5 @@
 // ============================================================
-// BypaxDPI — Merkezi Sabitler
+// DarknesDPI — Merkezi Sabitler
 // Tüm URL'ler, DNS ayarları ve app sabitleri burada toplanır.
 // ============================================================
 
@@ -7,8 +7,8 @@
 export const URLS = {
   youtube: "https://youtube.com/@ConsolAktif",
   patreon: "https://www.patreon.com/join/ConsolAktif",
-  tutorialHowItWorks: "https://bypaxdpi.vercel.app/how-it-works",
-  tutorialProxy: "https://bypaxdpi.vercel.app/proxy",
+  tutorialHowItWorks: "https://darknesdpi.vercel.app/how-it-works",
+  tutorialProxy: "https://darknesdpi.vercel.app/proxy",
 };
 
 // ===== DNS Ayarları =====
@@ -36,7 +36,7 @@ export const DOH_MAP = {
 
 // ===== Uygulama Sabitleri =====
 export const APP = {
-  name: "BypaxDPI",
+  name: "DarknesDPI",
   version: "1.0.0",
   designWidth: 380,
   designHeight: 700,

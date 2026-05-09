@@ -144,7 +144,7 @@ function App() {
   // Settings State
   // ✅ İlk giriş overlay state
   const [showFirstRunISS, setShowFirstRunISS] = useState(() => {
-    return !localStorage.getItem('bypax_first_run_done');
+    return !localStorage.getItem('darknesdpi_first_run_done');
   });
 
   const [config, setConfig] = useState(() => {
@@ -162,7 +162,7 @@ function App() {
       selectedIspProfile: "heavy",
     };
 
-    const saved = localStorage.getItem("bypax_config");
+    const saved = localStorage.getItem("darknesdpi_config");
     if (saved) {
       try {
         // P1-FIX: LocalStorage Obfuscation (Uyumluluk için önce düz metin mi kontrol et)
@@ -228,7 +228,7 @@ function App() {
         newConfig = { ...prev, [keyOrObj]: value };
       }
       // P1-FIX: Base64 kodlaması kaldırıldı, plaintext validasyonlu yazılıyor
-      localStorage.setItem("bypax_config", JSON.stringify(newConfig));
+      localStorage.setItem("darknesdpi_config", JSON.stringify(newConfig));
       return newConfig;
     });
   };
@@ -402,19 +402,19 @@ function App() {
                 .find((key) => DNS_MAP[key] === DNS_MAP[selectedDns])
                 ?.toUpperCase()
             : "SYSTEM";
-          tooltip = `🟢 BypaxDPI - ${t.statusConnected}\n127.0.0.1:${currentPortRef.current}\nDNS: ${dnsName}`;
+          tooltip = `🟢 DarknesDPI - ${t.statusConnected}\n127.0.0.1:${currentPortRef.current}\nDNS: ${dnsName}`;
           break;
         case "disconnected":
-          tooltip = `🔴 BypaxDPI - ${t.statusInactive}`;
+          tooltip = `🔴 DarknesDPI - ${t.statusInactive}`;
           break;
         case "retrying":
-          tooltip = `🔄 BypaxDPI - ${t.btnConnecting}\n${retryCount.current}/5...`;
+          tooltip = `🔄 DarknesDPI - ${t.btnConnecting}\n${retryCount.current}/5...`;
           break;
         case "connecting":
-          tooltip = `⏳ BypaxDPI - ${t.btnConnecting}`;
+          tooltip = `⏳ DarknesDPI - ${t.btnConnecting}`;
           break;
         default:
-          tooltip = "🛡️ BypaxDPI";
+          tooltip = "🛡️ DarknesDPI";
       }
       await invoke("update_tray_tooltip", { tooltip });
     } catch (e) {
@@ -776,7 +776,7 @@ function App() {
           setIsConnected(true);
           setIsProcessing(false);
           addLog(t.logConnected, "success", { i18nKey: "logConnected" });
-          notifyUser("Bypax", t.logConnected, "connect");
+          notifyUser("DarknesDPI", t.logConnected, "connect");
           updateTrayTooltip("connected");
           if (configRef.current.lanSharing) {
             (async () => {
@@ -885,7 +885,7 @@ function App() {
             addLog(t.logNpcapFallback || "⚠️ Npcap sürücüsü yanıt vermiyor. Gelişmiş bypass kapatılıp tekrar deneniyor...", "warn");
             configRef.current = { ...configRef.current, advancedBypass: false };
             setConfig(prev => ({ ...prev, advancedBypass: false }));
-            localStorage.setItem('bypax_config', JSON.stringify({ ...configRef.current, advancedBypass: false }));
+            localStorage.setItem('darknesdpi_config', JSON.stringify({ ...configRef.current, advancedBypass: false }));
             retryCount.current = 0; // Reset retry
             fatalErrorRef.current = false; // Hatayı temizle, tekrar denesin
             setIsProcessing(true);
@@ -907,7 +907,7 @@ function App() {
             addLog(`🔄 ${t.logAutoReconnect}`, "info", {
               i18nKey: "logAutoReconnect",
             });
-            notifyUser("BypaxDPI", t.logAutoReconnect, "disconnect");
+            notifyUser("DarknesDPI", t.logAutoReconnect, "disconnect");
             setIsProcessing(true);
             attemptReconnect();
           }
@@ -961,7 +961,7 @@ function App() {
           setIsConnected(true);
           setIsProcessing(false);
           addLog(t.logConnected, "info", { i18nKey: "logConnected" });
-          notifyUser("BypaxDPI", t.logConnected, "connect");
+          notifyUser("DarknesDPI", t.logConnected, "connect");
           updateTrayTooltip("connected"); // ✅ Auto-connect başarılı
           if (configRef.current.lanSharing) {
             try {
@@ -1048,7 +1048,7 @@ function App() {
 
       // Eğer kapatma (shutdown) sırasındaysa, bildirim yollama.
       if (!isAppClosingRef.current) {
-        notifyUser("BypaxDPI", t.notifDisconnectManual, "disconnect_manual"); // Özel notification event tipi
+        notifyUser("DarknesDPI", t.notifDisconnectManual, "disconnect_manual"); // Özel notification event tipi
       }
 
       setIsProcessing(false);
@@ -1208,7 +1208,7 @@ function App() {
 
         // P1-FIX: Auto-Connect Race Condition çözümü (Temizlik adımları tamamlandıktan SONRA bağlan)
         // ✅ İlk giriş overlay'ı açıksa auto-connect yapma — kullanıcı ISS seçsin önce
-        const isFirstRun = !localStorage.getItem('bypax_first_run_done');
+        const isFirstRun = !localStorage.getItem('darknesdpi_first_run_done');
         if (configRef.current.autoConnect && !childProcess.current && !isFirstRun) {
           setIsProcessing(true);
           startEngine(8080);
@@ -1247,7 +1247,7 @@ function App() {
           getCurrentWindow().setFocus();
           const confirmed = await customConfirm(
             t.confirmExitDesc ||
-              "Bypax motorunu durdurup çıkmak istediğinize emin misiniz?",
+              "Darknes motorunu durdurup çıkmak istediğinize emin misiniz?",
             { title: t.confirmExitTitle || "Çıkış" },
           );
           if (!confirmed) {
@@ -1350,7 +1350,7 @@ function App() {
     if (configRef.current.requireConfirmation !== false) {
       const confirmed = await customConfirm(
         t.confirmExitDesc ||
-          "Bypax motorunu durdurup çıkmak istediğinize emin misiniz?",
+          "Darknes motorunu durdurup çıkmak istediğinize emin misiniz?",
         { title: t.confirmExitTitle || "Çıkış" },
       );
       if (!confirmed) return;
@@ -1423,8 +1423,8 @@ function App() {
       updateTrayTooltip('disconnected');
     };
     
-    window.addEventListener('bypax-force-disconnect', handleForceDisconnect);
-    return () => window.removeEventListener('bypax-force-disconnect', handleForceDisconnect);
+    window.addEventListener('darknesdpi-force-disconnect', handleForceDisconnect);
+    return () => window.removeEventListener('darknesdpi-force-disconnect', handleForceDisconnect);
   }, []);
 
   // DPI & Layout Scaling Fix
@@ -1546,8 +1546,8 @@ function App() {
               }}
             >
               <img
-                src="/bypax-logo.png"
-                alt="BypaxDPI"
+                src="/darknesdpi-logo.png"
+                alt="DarknesDPI"
                 style={{
                   width: "70px",
                   height: "70px",
@@ -1558,7 +1558,7 @@ function App() {
                 }}
               />
               <h1 style={{ fontSize: "1.3rem", fontWeight: "600", color: "#fff", marginBottom: "0.5rem" }}>
-                {t.confirmExitTitle || "BypaxDPI Kapatılıyor"}
+                {t.confirmExitTitle || "DarknesDPI Kapatılıyor"}
               </h1>
               <p style={{ color: "#a1a1aa", fontSize: "0.95rem" }}>
                 <AnimatePresence mode="wait">
@@ -1633,8 +1633,8 @@ function App() {
               }}
             >
               <img
-                src="/bypax-logo.png"
-                alt="BypaxDPI"
+                src="/darknesdpi-logo.png"
+                alt="DarknesDPI"
                 style={{
                   width: "80px",
                   height: "80px",
@@ -1820,7 +1820,7 @@ function App() {
             }} />
 
             <div style={{ zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", maxWidth: "420px", width: "100%" }}>
-              <img src="/bypax-logo.png" alt="BypaxDPI" style={{ width: "56px", height: "56px", marginBottom: "1rem", borderRadius: "12px", boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)" }} />
+              <img src="/darknesdpi-logo.png" alt="DarknesDPI" style={{ width: "56px", height: "56px", marginBottom: "1rem", borderRadius: "12px", boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)" }} />
               <h1 style={{ fontSize: "1.25rem", marginBottom: "0.5rem", color: "#fff", fontWeight: "700" }}>{t.issOverlayTitle}</h1>
               <p style={{ color: "#a1a1aa", marginBottom: "1.25rem", lineHeight: "1.5", fontSize: "0.85rem" }}>{t.issOverlayDesc}</p>
 
@@ -1883,7 +1883,7 @@ function App() {
 
               <button
                 onClick={() => {
-                  localStorage.setItem('bypax_first_run_done', 'true');
+                  localStorage.setItem('darknesdpi_first_run_done', 'true');
                   setShowFirstRunISS(false);
                   // Otomatik bağlan
                   if (!isConnected && !isProcessing) {
@@ -1920,7 +1920,7 @@ function App() {
 
               <button
                 onClick={() => {
-                  localStorage.setItem('bypax_first_run_done', 'true');
+                  localStorage.setItem('darknesdpi_first_run_done', 'true');
                   setShowFirstRunISS(false);
                 }}
                 style={{
@@ -1945,8 +1945,8 @@ function App() {
       {/* Header */}
       <header className="app-header">
         <div className="brand">
-          <img src="/bypax-logo.png" alt="BypaxDPI" className="brand-logo" />
-          <span className="brand-name">BYPAXDPI</span>
+          <img src="/darknesdpi-logo.png" alt="DarknesDPI" className="brand-logo" />
+          <span className="brand-name">DARKNESDPI</span>
         </div>
         <div
           className={`status-badge ${isConnected ? "active" : isProcessing ? "processing" : "passive"}`}

@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "BypaxDPI",
+  "productName": "DarknesDPI",
   "version": "1.0.0",
-  "identifier": "com.consolaktif.bypaxdpi",
+  "identifier": "com.consolaktif.darknesdpi",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "BypaxDPI",
+        "title": "DarknesDPI",
         "width": 380,
         "height": 700,
         "resizable": false,

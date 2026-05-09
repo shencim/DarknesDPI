@@ -160,7 +160,7 @@ const Settings = ({ onBack, config, updateConfig, dnsLatencies, setDnsLatencies 
       await invoke('clear_system_proxy');
       
       // P1-FIX: Ana ekrandaki bağlantı durumunu eşzamanlı güncelle
-      window.dispatchEvent(new CustomEvent('bypax-force-disconnect', {
+      window.dispatchEvent(new CustomEvent('darknesdpi-force-disconnect', {
         detail: { reason: 'manual-fix' }
       }));
       
