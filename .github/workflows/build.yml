@@ -1,0 +1,80 @@
+name: Build Windows EXE
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - name: Rust cache
+        uses: swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+
+      - name: Clone SpoofDPI source
+        run: |
+          git clone --depth 1 --branch v1.2.1 https://github.com/xvzc/SpoofDPI.git SpoofDPI-1.2.1/SpoofDPI-1.2.1
+        shell: bash
+
+      - name: Build SpoofDPI (bypax-proxy)
+        run: |
+          mkdir -p spoofdpi
+          mkdir -p src-tauri/binaries
+          cd SpoofDPI-1.2.1/SpoofDPI-1.2.1
+          go build -trimpath -ldflags="-s -w" -o ../../spoofdpi/bypax-proxy.exe ./cmd/spoofdpi
+        shell: bash
+
+      - name: Copy proxy binary to tauri binaries
+        run: node scripts/copy-proxy.cjs
+        shell: bash
+
+      - name: Download Npcap installer
+        run: |
+          curl -L "https://npcap.com/dist/npcap-1.79.exe" -o "src-tauri/binaries/npcap-installer.exe"
+        shell: bash
+
+      - name: Install frontend dependencies
+        run: npm ci
+
+      - name: Build Tauri app
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: v1.0.0
+          releaseName: 'BypaxDPI v1.0.0'
+          releaseBody: 'Windows için DPI bypass uygulaması.'
+          releaseDraft: false
+          prerelease: false
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: BypaxDPI-Windows
+          path: |
+            src-tauri/target/release/bundle/nsis/*.exe
+            src-tauri/target/release/bundle/msi/*.msi
+          retention-days: 7
