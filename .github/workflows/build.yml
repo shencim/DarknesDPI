@@ -22,16 +22,20 @@ jobs:
         run: |
           curl -L "https://github.com/xvzc/SpoofDPI/archive/refs/tags/v1.2.1.tar.gz" -o spoofdpi.tar.gz
           tar xzf spoofdpi.tar.gz
-          cd SpoofDPI-1.2.1
-          GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w" -o bypax-proxy.exe ./cmd/spoofdpi
+          # Klasör adını otomatik bul (SpoofDPI-1.2.1 veya xvzc-SpoofDPI-... olabilir)
+          SPOOFDIR=$(find . -maxdepth 1 -type d -name "*SpoofDPI*" -o -maxdepth 1 -type d -name "*spoofdpi*" | head -1)
+          echo "Bulunan klasör: $SPOOFDIR"
+          ls -la
+          cd "$SPOOFDIR"
+          GOOS=windows GOARCH=amd64 go build -trimpath -ldflags="-s -w" -o ../bypax-proxy.exe ./cmd/spoofdpi
           echo "Build OK"
-          ls -lh bypax-proxy.exe
+          ls -lh ../bypax-proxy.exe
 
       - name: Upload proxy binary
         uses: actions/upload-artifact@v4
         with:
           name: bypax-proxy
-          path: SpoofDPI-1.2.1/bypax-proxy.exe
+          path: bypax-proxy.exe
           retention-days: 1
 
   # ── JOB 2: Windows'ta Tauri build ──
