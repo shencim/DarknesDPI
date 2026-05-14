@@ -344,8 +344,8 @@ func sendFragmented(h syscall.Handle, pkt []byte, addr []byte) {
 	binary.BigEndian.PutUint32(frag2[seqOff:seqOff+4], origSeq+uint32(splitAt))
 	divertCalcChecksums(frag2, addr, 0)
 
-	_ = divertSend(h, frag1, addr)
 	_ = divertSend(h, frag2, addr)
+	_ = divertSend(h, frag1, addr)
 }
 
 func applyAutoTTL(pkt []byte, addr []byte) {
